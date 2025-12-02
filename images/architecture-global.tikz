@@ -1,0 +1,13 @@
+% Placeholder architecture diagram
+\begin{tikzpicture}[font=\small, node distance=12mm]
+\tikzstyle{svc}=[draw, rounded corners, fill=blue!6, minimum width=32mm, minimum height=10mm]
+\tikzstyle{db}=[draw, cylinder, cylinder uses custom shape, cylinder body fill=green!6, minimum height=10mm, minimum width=18mm, shape border rotate=90]
+\node[svc] (frontend) {Frontend React TS};
+\node[svc, right=25mm of frontend] (backend) {Backend Spring Boot};
+\node[db, below=12mm of backend] (redis) {Redis};
+\node[svc, below=12mm of backend, xshift=-35mm] (tts) {MaryTTS};
+\draw[-stealth] (frontend) -- node[above]{HTTP/WebSocket} (backend);
+\draw[-stealth] (backend) -- node[right]{Cache/Session} (redis);
+\draw[-stealth] (backend) -- node[above left]{TTS} (tts);
+\node[below=16mm of redis] (cap) {Remplacer par le schéma final};
+\end{tikzpicture}

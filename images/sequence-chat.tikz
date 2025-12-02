@@ -1,0 +1,15 @@
+\begin{tikzpicture}[font=\small, node distance=10mm]
+\tikzstyle{actor}=[draw, rectangle, minimum width=20mm, minimum height=7mm, fill=white]
+\node[actor] (user) {Utilisateur};
+\node[actor, right=25mm of user] (front) {Frontend};
+\node[actor, right=25mm of front] (back) {Backend};
+\node[actor, right=25mm of back] (tts) {MaryTTS};
+\foreach \x in {user,front,back,tts} {\draw (\x.south) -- ++(0,-55mm);} 
+\draw[-stealth] (user.south) ++(0,-5mm) -- node[above]{Saisie message} ++(25mm,0);
+\draw[-stealth] (front.south) ++(0,-12mm) -- node[above]{POST /chat} ++(25mm,0);
+\draw[-stealth] (back.south) ++(0,-19mm) -- node[above]{Persistance + IA} ++(25mm,0);
+\draw[-stealth] (tts.south) ++(0,-26mm) -- node[above]{Audio} ++(-25mm,0);
+\draw[-stealth] (back.south) ++(0,-33mm) -- node[above]{WS Message} ++(-25mm,0);
+\draw[-stealth] (front.south) ++(0,-40mm) -- node[above]{Lecture Audio} ++(-25mm,0);
+\node[below=58mm of back] {Remplacer par le diagramme de séquence complet};
+\end{tikzpicture}

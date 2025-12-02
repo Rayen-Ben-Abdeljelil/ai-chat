@@ -1,0 +1,11 @@
+\begin{tikzpicture}[font=\small, node distance=10mm]
+\tikzstyle{blk}=[draw, rounded corners, fill=red!8, minimum width=32mm, minimum height=8mm]
+\node[blk] (login) {Login (email, mdp)};
+\node[blk, right=25mm of login] (auth) {Auth API};
+\node[blk, right=25mm of auth] (jwt) {JWT signé};
+\node[blk, below=15mm of auth] (api) {API protégée};
+\draw[-stealth] (login) -- node[above]{POST /auth} (auth);
+\draw[-stealth] (auth) -- node[above]{200 + token} (jwt);
+\draw[-stealth] (jwt) |- node[right]{Authorization: Bearer} (api);
+\node[below=8mm of api] {Flux JWT à détailler};
+\end{tikzpicture}

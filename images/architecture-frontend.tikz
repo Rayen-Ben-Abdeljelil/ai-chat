@@ -1,0 +1,11 @@
+\begin{tikzpicture}[font=\small, node distance=10mm]
+\tikzstyle{cmp}=[draw, rounded corners, fill=cyan!10, minimum width=35mm, minimum height=8mm]
+\node[cmp] (pages) {Pages (Routes)};
+\node[cmp, below=of pages] (components) {Components (UI)};
+\node[cmp, below=of components] (context) {Context (State)};
+\node[cmp, below=of context] (services) {Services (API/WS)};
+\draw[-stealth] (pages) -- (components);
+\draw[-stealth] (components) -- (context);
+\draw[-stealth] (context) -- (services);
+\node[below=8mm of services] {Remplacer par l'architecture frontend détaillée};
+\end{tikzpicture}

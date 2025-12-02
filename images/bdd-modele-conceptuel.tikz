@@ -1,0 +1,9 @@
+\begin{tikzpicture}[font=\small, node distance=14mm]
+\tikzstyle{ent}=[draw, rectangle, rounded corners, fill=gray!10, minimum width=30mm, minimum height=8mm]
+\node[ent] (user) {User};
+\node[ent, right=25mm of user] (chatroom) {ChatRoom};
+\node[ent, right=25mm of chatroom] (message) {Message};
+\draw (user) -- node[above]{1..*} (chatroom);
+\draw (chatroom) -- node[above]{1..*} (message);
+\node[below=8mm of message] {Remplacer par le MCD complet};
+\end{tikzpicture}

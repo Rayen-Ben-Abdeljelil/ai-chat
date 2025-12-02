@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\draw[fill=gray!5] (0,0) rectangle (8,4.5);
+\draw (0.5,3.8) rectangle (7.5,4.2) node[pos=.5]{Barre de titre};
+\draw (1,3.2) rectangle (7,3.6) node[pos=.5]{Logo / Titre};
+\draw (1,2.4) rectangle (7,2.9) node[pos=.5]{Email};
+\draw (1,1.7) rectangle (7,2.2) node[pos=.5]{Mot de passe};
+\draw (3,0.8) rectangle (5,1.3) node[pos=.5]{Connexion};
+\node at (4,-0.3) {Remplacer par capture réelle};
+\end{tikzpicture}

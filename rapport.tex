@@ -5,6 +5,13 @@
 \usepackage[french]{babel}
 \usepackage{microtype}
 \usepackage{geometry}
+% -*- coding: utf-8 -*-
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{microtype}
+\usepackage{geometry}
 \geometry{left=3cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
 \usepackage{graphicx}
 \usepackage{caption}
@@ -12,6 +19,9 @@
 \usepackage{float}
 \usepackage{booktabs}
 \usepackage{longtable}
+\usepackage{array}
+\usepackage{titlesec}
+\usepackage{setspace}
 \usepackage{hyperref}
 \hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
 \usepackage{fancyhdr}
@@ -19,9 +29,15 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{enumitem}
+\usepackage{tikz}
+\usepackage{acronym}
 
-% Chemin par défaut pour les images
-\graphicspath{{figures/}}
+% Chemin par défaut pour les images générées par TikZ
+% (nous utilisons \input{images/*.tikz})
+\graphicspath{{images/}}
+
+% Interligne
+\onehalfspacing
 
 % Header / Footer
 \pagestyle{fancy}
@@ -42,9 +58,12 @@
   captionpos=b
 }
 
-% Metadonnées du document
-\title{\Huge{Développement d'une application de type Chat-AI \\ (Frontend + Backend)}}
-\author{Équipe de développement \\ Réalisé par : Votre Nom \\ Encadrant : Nom de l'encadrant}
+% Métadonnées du document
+	itle{\Huge{Rapport Professionnel du Projet Chat-AI \\
+(Frontend React/TypeScript \& Backend Spring Boot)}}
+\author{\textbf{Rayane BEN ABDELJELIL} \and \textbf{Sedki BAGGA} \\
+Cycle d'ingénieurs en Informatique Appliquée --- 3\textsuperscript{ème} année \\
+Semestre 5}
 \date{\today}
 
 \begin{document}
@@ -52,276 +71,246 @@
 % Page de garde
 \begin{titlepage}
   \centering
-  \vspace*{2cm}
-  {\Huge \textbf{Développement d'une application Chat-AI}}\\[1cm]
-  {\Large Frontend (React/Vite/TypeScript) \& Backend (Java Spring Boot)}\\[2cm]
-  \includegraphics[width=0.45\textwidth]{cover-logo.png}\\[1.5cm]
-  {\Large \textbf{Rapport Technique et Académique}}\\[2cm]
-  {\large Réalisé par : \textbf{Votre Nom}}\\
-  {\large Équipe : \textbf{Nom de l'équipe / Auteur}}\\[1cm]
-  {\large Encadrant : \textbf{Nom de l'encadrant}}\\[2cm]
+  \vspace*{1.5cm}
+  {\Large École / Université}\[0.2cm]
+  {\large Département Informatique}\[2cm]
+  {\Huge \textbf{Projet Chat-AI}}\\[0.8cm]
+  {\Large Frontend (React/Vite/TypeScript) \& Backend (Spring Boot)}\\[1.6cm]
+  {\Large \textbf{Rapport Technique et Académique}}\\[1.2cm]
+  {\large Réalisé par : \textbf{Rayane BEN ABDELJELIL} et \textbf{Sedki BAGGA}}\\[0.3cm]
+  {\large Cycle d'ingénieurs en Informatique Appliquée --- 3\textsuperscript{ème} année, Semestre 5}\\[0.8cm]
+  {\large Encadrant : \textbf{\dots}}\\[1.2cm]
   {\large Date : \today}\\
   \vfill
-  {\small Université / École — Département / Master / Licence}
+  {\small \emph{Ce rapport présente la conception, l'implémentation, les validations et le déploiement d'une application de chat assistée par IA, incluant TTS et intégrations temps réel.}}
 \end{titlepage}
 
-% Résumé en français
+% Résumé
 \begin{abstract}
-  Ce rapport présente la conception, l'implémentation et le déploiement d'une application de type Chat-AI comprenant une interface web (frontend) développée en React + TypeScript et un serveur backend Java Spring Boot. Le document couvre l'architecture logicielle, les choix technologiques, les détails d'implémentation clés pour les composants critiques, la sécurité, le déploiement Docker / docker-compose, ainsi que des suggestions pour des améliorations futures. Des emplacements pour captures d'écran et diagrammes sont prévus.
+  Ce rapport documente un système de chat assisté par IA comprenant une interface web (React/TypeScript, Vite) et un backend Java Spring Boot exposant des API REST et WebSocket. Les fonctionnalités clés incluent l'authentification JWT, l'intégration d'un service de synthèse vocale (MaryTTS), la gestion de conversations et pièces jointes (PDF), la persistance/\emph{caching} via Redis, et le déploiement conteneurisé (Docker/docker-compose). Nous détaillons l'architecture, les choix techniques, la qualité logicielle, la sécurité, les scénarios de tests, ainsi que des perspectives d'évolution.
 \end{abstract}
 
 \clearpage
-\tableofcontents
+	ableofcontents
 \listoffigures
 \listoftables
 \clearpage
 
-% Remerciements (facultatif)
+% Liste des acronymes
+\chapter*{Liste des acronymes}
+\addcontentsline{toc}{chapter}{Liste des acronymes}
+\begin{acronym}[JWT]
+  \acro{API}{Application Programming Interface}
+  \acro{CI/CD}{Continuous Integration / Continuous Delivery}
+  \acro{DTO}{Data Transfer Object}
+  \acro{HTTP}{HyperText Transfer Protocol}
+  \acro{IA}{Intelligence Artificielle}
+  \acro{JWT}{JSON Web Token}
+  \acro{REST}{REpresentational State Transfer}
+  \acro{TTS}{Text-To-Speech}
+  \acro{WS}{WebSocket}
+\end{acronym}
+
+% Remerciements
 \chapter*{Remerciements}
 \addcontentsline{toc}{chapter}{Remerciements}
-Nous remercions... (Compléter selon le contexte).
+Nous remercions l'équipe pédagogique pour l'encadrement, les conseils techniques et l'accompagnement tout au long du semestre. Nous remercions également nos camarades pour leurs retours et tests utilisateurs.
 
 \clearpage
 
 % Introduction
 \chapter{Introduction}
-\section{Contexte}
-Présentez le contexte général du projet : assistants conversationnels, intégration d'IA, motivations (ex : aide à la productivité, interfaces vocales, accessibilité, etc.).
+\section{Contexte et motivation}
+Les assistants conversationnels s'imposent comme un vecteur d'amélioration de la productivité et de l'accessibilité. Le présent projet vise à bâtir une application de \emph{chat} assistée par \ac{IA} intégrant la voix (\ac{TTS}) et des échanges temps réel via \ac{WS}, tout en garantissant des standards de sécurité et de qualité élevés.
 
-\section{Objectifs}
-\begin{itemize}
-  \item Concevoir une application web de chat assistée par IA.
-  \item Fournir une architecture scalable et sécurisée.
-  \item Intégrer TTS (Text-To-Speech) et gestion de fichiers (PDF).
-  \item Déployer via Docker / docker-compose.
+\section{Objectifs pédagogiques et techniques}
+\begin{itemize}[leftmargin=*,nosep]
+  \item Concevoir une architecture modulaire et évolutive (front/back découplés).
+  \item Implémenter un backend sécurisé (JWT, filtres) exposant REST et WebSocket.
+  \item Développer un frontend ergonomique en React/TypeScript avec gestion d'état.
+  \item Intégrer MaryTTS pour la synthèse vocale, et un service IA (p. ex. Gemini).
+  \item Déployer et valider via Docker/docker-compose, avec Redis en \emph{cache}.
 \end{itemize}
 
 \section{Organisation du rapport}
-Brève description des chapitres.
+Le document couvre successivement les exigences, l'architecture, l'implémentation des modules backend et frontend, l'intégration MaryTTS, la sécurité, le déploiement et la validation, avant de conclure sur les perspectives.
 
-% Chapitre architecture
-\chapter{Analyse et Architecture du Système}
+% Exigences
+\chapter{Exigences et Spécifications}
+\section{Exigences fonctionnelles}
+\begin{longtable}{p{4.2cm} p{10cm}}
+	oprule
+	extbf{Fonctionnalité} & \textbf{Description}\\
+\midrule\endhead
+Authentification & L'utilisateur se connecte par email/mot de passe, reçoit un \ac{JWT} et accède aux ressources protégées.\\
+Gestion des conversations & Création de salons, envoi/réception de messages, historique.\\
+Intégration IA & Envoi d'invites au service IA (ex. Gemini) et restitution de réponses.\\
+Synthèse vocale & Conversion texte\,$\to$\,audio via MaryTTS et lecture côté client.\\
+Import PDF & Envoi de PDF et extraction de contenu texte.\\
+Temps réel & Notifications et mise à jour en direct via \ac{WS}.\\
+\bottomrule
+\end{longtable}
+
+\section{Exigences non fonctionnelles}
+\begin{itemize}[leftmargin=*,nosep]
+  \item \textbf{Sécurité} : authentification JWT, validation d'entrée, CORS, gestion des secrets.
+  \item \textbf{Performance} : réponses en \og temps quasi réel \fg{} pour le chat.
+  \item \textbf{Scalabilité} : conteneurisation et découplage des services.
+  \item \textbf{Qualité} : tests unitaires, linting, conventions de code.
+\end{itemize}
+
+% Architecture
+\chapter{Architecture du Système}
 \section{Vue d'ensemble}
-Décrire l'architecture globale : client web (React) $\\leftrightarrow$ API REST + WebSocket (Spring Boot) $\\leftrightarrow$ Services externes (API Gemini, TTS, Redis).
+La figure~\ref{fig:arch-global} illustre l'architecture globale : le frontend React communique avec le backend Spring Boot par \ac{HTTP} (REST) et \ac{WS}. Le backend interagit avec Redis pour le cache et MaryTTS pour la synthèse vocale.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.85\textwidth]{architecture.png}
-  \caption{Architecture générale du système (client, serveur, services externes).}
-  \label{fig:architecture}
+  \input{images/architecture-global.tikz}
+  \caption{Architecture générale du système}
+  \label{fig:arch-global}
 \end{figure}
 
-\subsection{Composants principaux}
-\begin{itemize}
-  \item Frontend : \texttt{ask-ai-web-app} (Vite, React, TypeScript)
-  \item Backend : \texttt{ai-server} (Spring Boot, Maven)
-  \item Persistances : Redis, base de données (si applicable)
-  \item Déploiement : Docker / docker-compose
+\section{Backend}
+Le backend (figure~\ref{fig:arch-back}) suit une architecture en couches (Controllers, Services, Repositories, Entities) et intègre des modules de sécurité (JWT), WebSocket et Redis.
+
+\begin{figure}[H]
+  \centering
+  \input{images/architecture-backend.tikz}
+  \caption{Architecture logique du backend}
+  \label{fig:arch-back}
+\end{figure}
+
+\section{Frontend}
+Le frontend (figure~\ref{fig:arch-front}) est structuré en pages, composants, contexte (état) et services (API/WS), facilitant la maintenabilité.
+
+\begin{figure}[H]
+  \centering
+  \input{images/architecture-frontend.tikz}
+  \caption{Architecture logique du frontend}
+  \label{fig:arch-front}
+\end{figure}
+
+% Backend en détail
+\chapter{Implémentation Backend (Spring Boot)}
+\section{Structure et packages}
+\begin{itemize}[leftmargin=*,nosep]
+  \item \texttt{AiServerApplication.java} : point d'entrée \cite{springboot}.
+  \item \texttt{controller/} : \texttt{GeminiController}, \texttt{PdfController}, \texttt{TextToSpeechController}, \texttt{UserController}.
+  \item \texttt{services/} : \texttt{ChatMessageService}, \texttt{ChatRoomService}, \texttt{PdfExtractorService}, \texttt{TextToSpeechService}, \texttt{UserService}.
+  \item \texttt{repositories/} : \texttt{UserRepository}, \texttt{MessageRepository}, \texttt{ChatRoomRepository}, \texttt{ChatMessageRepository}.
+  \item \texttt{config/} : \texttt{SecurityConfiguration}, \texttt{JwtService}, \texttt{JwtAuthenticationFilter}, \texttt{RedisConfig}, \texttt{WebSocketConfig}, \texttt{WebConfig}.
+  \item \texttt{clients/} : \texttt{MaryTTSClient} (accès service TTS MaryTTS).
 \end{itemize}
 
-\subsection{Diagrammes recommandés}
-\begin{itemize}
-  \item Diagramme d'architecture (figure \ref{fig:architecture}).
-  \item Diagramme ER pour les entités utilisateur / messages (\texttt{figures/er_diagram.png}).
-  \item Diagramme de séquence pour l'envoi d'un message et réponse du modèle IA (\texttt{figures/sequence_message.png}).
+\section{Modèle de données}
+Les entités \texttt{User}, \texttt{ChatRoom}, \texttt{Messages} et \texttt{ChatMessages} structurent la persistance. La figure~\ref{fig:mcd} esquisse leur relation (MCD simplifié).
+
+\begin{figure}[H]
+  \centering
+  \input{images/bdd-modele-conceptuel.tikz}
+  \caption{Modèle conceptuel (simplifié) des entités}
+  \label{fig:mcd}
+\end{figure}
+
+\section{Sécurité (JWT)}
+Le flux d'authentification utilise un \ac{JWT} signé côté serveur (figure~\ref{fig:jwt-flux}). Les filtres (\texttt{JwtAuthenticationFilter}) valident le token pour protéger les endpoints.
+
+\begin{figure}[H]
+  \centering
+  \input{images/securite-jwt-flux.tikz}
+  \caption{Flux d'authentification et d'autorisation basé sur JWT \cite{rfc7519}}
+  \label{fig:jwt-flux}
+\end{figure}
+
+\section{WebSocket et temps réel}
+Un \emph{broker} STOMP est configuré pour les échanges en temps réel \cite{spring-websocket}. Les messages sont poussés au client lors des réponses IA ou d'événements de salon.
+
+\section{Intégration MaryTTS}
+Le client \texttt{MaryTTSClient} s'interface avec le serveur MaryTTS (binaire local fourni). Le service \texttt{TextToSpeechService} convertit un texte en flux audio, renvoyé ensuite au frontend. Voir \cite{marytts}.
+
+% Frontend en détail
+\chapter{Implémentation Frontend (React/TypeScript)}
+\section{Structure}
+\begin{itemize}[leftmargin=*,nosep]
+  \item \texttt{pages/} : \texttt{ChatAsistant.tsx}, \texttt{ChatPage.tsx}, \texttt{LoginPage.tsx}, \texttt{TestAudioPage.tsx}.
+  \item \texttt{components/} : \texttt{Chat.tsx}, \texttt{ChatAsistantComponent.tsx}, \texttt{Login.tsx}.
+  \item \texttt{apis/} : DTOs, contrôleurs, interceptors (Axios) \cite{reactdocs}.
+  \item \texttt{services/} : \texttt{WebSocketService.ts} pour la connexion temps réel.
+  \item \texttt{context/ChatContext.tsx} : état global et actions.
 \end{itemize}
 
-% Chapitre Backend
-\chapter{Backend --- Spring Boot}
-\section{Présentation du module}
-Chemin du projet : \texttt{backend/ai-server/}\\
-Fichier de configuration principal : \texttt{src/main/resources/application.yml}
+\section{Parcours utilisateur}
+\begin{figure}[H]
+  \centering
+  \input{images/ui-login-ecran-placeholder.tikz}
+  \caption{Maquette --- écran de connexion}
+\end{figure}
 
-\section{Technologies et dépendances}
-\begin{itemize}
-  \item Java 17+ (ou la version utilisée)
-  \item Spring Boot (web, security, data, websocket)
-  \item Maven (wrapper fourni)
-  \item Redis pour sessions / cache
-  \item Bibliothèques pour TTS (client MaryTTS) et intégration API IA
-\end{itemize}
+\begin{figure}[H]
+  \centering
+  \input{images/ui-chat-ecran-placeholder.tikz}
+  \caption{Maquette --- écran principal de chat}
+\end{figure}
 
-\section{Structure du code}
-\begin{itemize}
-  \item \texttt{com.bagga.aiserver.AiServerApplication} : point d'entrée.
-  \item \texttt{controller/} : endpoints REST et WebSocket (ex: \texttt{GeminiController}, \texttt{PdfController}, \texttt{TextToSpeechController}).
-  \item \texttt{services/} : logique métier (\texttt{ChatMessageService}, \texttt{TextToSpeechService}, \texttt{PdfExtractorService}).
-  \item \texttt{repositories/} : interfaces Spring Data (\texttt{UserRepository}, \texttt{MessageRepository}).
-  \item \texttt{config/} : configuration de sécurité et JWT (\texttt{SecurityConfiguration}, \texttt{JwtService}, \texttt{JwtAuthenticationFilter}), WebSocket (\texttt{WebSocketConfig}) et Redis (\texttt{RedisConfig}).
-\end{itemize}
+\section{Gestion des appels et de l'état}
+Les appels REST utilisent Axios avec un interceptor injectant le JWT. Le contexte gère l'utilisateur courant, les salons et la file de messages. Les événements \ac{WS} actualisent l'UI en continu.
 
-\subsection{Endpoints clés}
-\begin{itemize}
-  \item \texttt{POST /api/auth/login} --- authentification
-  \item \texttt{POST /api/users} --- création d'utilisateur
-  \item \texttt{POST /api/gemini/ask} --- envoyer un message au modèle IA
-  \item \texttt{POST /api/pdf/upload} --- extraire texte d'un PDF
-  \item WebSocket: \texttt{/ws/chat} --- canal pour messages en temps réel
-\end{itemize}
+% Intégration système et déploiement
+\chapter{Intégration Système et Déploiement}
+\section{Flux bout-en-bout}
+La figure~\ref{fig:seq-chat} présente un diagramme de séquence simplifié de l'envoi d'un message et de la réponse avec \ac{TTS}.
 
-\subsection{Sécurité}
-\begin{itemize}
-  \item Authentification JWT
-  \item Filtres (\texttt{JwtAuthenticationFilter}) pour valider les requêtes
-  \item Bonnes pratiques : stocker secrets dans variables d'environnement, rotation des clés, limiter scopes d'API externes
-\end{itemize}
+\begin{figure}[H]
+  \centering
+  \input{images/sequence-chat.tikz}
+  \caption{Séquence simplifiée d'une interaction de chat}
+  \label{fig:seq-chat}
+\end{figure}
 
-\subsection{Extraits de code}
-Exemple : configuration WebSocket (fichier \texttt{WebSocketConfig.java}, résumé)
-\begin{lstlisting}[language=Java,caption={Extrait : configuration WebSocket}]
-@Configuration
-@EnableWebSocketMessageBroker
-public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-  @Override
-  public void registerStompEndpoints(StompEndpointRegistry registry) {
-    registry.addEndpoint("/ws/chat").setAllowedOrigins("*");
-  }
-  // ...
-}
-\end{lstlisting}
+\section{Docker et orchestration locale}
+Le déploiement local s'appuie sur \texttt{docker-compose.yml}. Un exemple de topologie est illustré figure~\ref{fig:deploiement-dc}.
 
-% Chapitre Frontend
-\chapter{Frontend --- React + TypeScript}
-\section{Présentation du module}
-Chemin du projet : \texttt{frontend/ask-ai-web-app/}
+\begin{figure}[H]
+  \centering
+  \input{images/deploiement-docker-compose.tikz}
+  \caption{Topologie de déploiement locale (exemple)}
+  \label{fig:deploiement-dc}
+\end{figure}
 
-\section{Technologies}
-\begin{itemize}
-  \item Vite + React
-  \item TypeScript
-  \item Axios (interceptor \texttt{Interceptors/axiosInstance.ts})
-  \item WebSocket client (service \texttt{services/WebSocketService.ts})
-  \item Gestion d'état via Context API (\texttt{context/ChatContext.tsx})
-\end{itemize}
-
-\section{Structure du projet}
-\begin{itemize}
-  \item \texttt{src/pages/} : pages principales (\texttt{ChatAsistant.tsx}, \texttt{LoginPage.tsx})
-  \item \texttt{src/components/} : composants réutilisables (\texttt{Chat.tsx}, \texttt{ChatAsistantComponent.tsx}, \texttt{Login.tsx})
-  \item \texttt{src/apis/} : appels HTTP et DTOs
-  \item \texttt{src/services/WebSocketService.ts} : connexion en temps réel
-\end{itemize}
-
-\section{Flux de données et logique}
-\begin{itemize}
-  \item Authentification : stockage du token JWT (localStorage ou cookie sécurisé)
-  \item Connexion WebSocket établie après authentification
-  \item Envoi d'un message : UI -> WebSocket ou POST -> Backend -> modèle IA -> réponse -> UI
-\end{itemize}
-
-\section{Extraits de code}
-Exemple d'appel API (Axios interceptor)
-\begin{lstlisting}[language=JavaScript,caption={Extrait : Interceptor Axios}]
-import axios from 'axios';
-const instance = axios.create({ baseURL: '/api' });
-instance.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
-});
-export default instance;
-\end{lstlisting}
-
-\section{Captures d'écran recommandées}
-\begin{itemize}
-  \item \texttt{figures/ui_login.png} --- page de connexion.
-  \item \texttt{figures/ui_chat.png} --- interface de chat principal.
-  \item \texttt{figures/ui_test_audio.png} --- page TestAudioPage (ex. voix/TTS).
-  \item \texttt{figures/ui_admin_dashboard.png} --- si existant, page d'administration.
-\end{itemize}
-
-% Chapitre Intégration & Déploiement
-\chapter{Intégration et Déploiement}
-\section{Fichier \texttt{docker-compose.yml}}
-Inclure un extrait et expliquer les services (app-backend, app-frontend, redis, db). Exemple :
-\begin{lstlisting}[language=YAML,caption={Extrait : docker-compose.yml}]
-version: '3.8'
-services:
-  ai-server:
-    build: ./ai-server
-    ports:
-      - "8080:8080"
-    environment:
-      - SPRING_PROFILES_ACTIVE=prod
-  frontend:
-    build: ./ask-ai-web-app
-    ports:
-      - "3000:3000"
-  redis:
-    image: redis:6
-    ports:
-      - "6379:6379"
-\end{lstlisting}
-
-\section{Étapes de déploiement local}
-\begin{enumerate}
-  \item Construire backend : \texttt{cd backend/ai-server && ./mvnw clean package}
-  \item Construire images Docker et démarrer : \texttt{docker-compose up --build}
-  \item Accéder à \texttt{http://localhost:3000} (frontend) et \texttt{http://localhost:8080} (API)
+\section{Procédure de mise en route}
+\begin{enumerate}[leftmargin=*,nosep]
+  \item \textbf{Backend} : \texttt{cd backend/ai-server} ; \texttt{mvnw clean package}.
+  \item \textbf{Frontend} : \texttt{cd frontend/ask-ai-web-app} ; \texttt{npm install} ; \texttt{npm run build}.
+  \item \textbf{Conteneurs} : \texttt{docker-compose up --build}.
 \end{enumerate}
 
-\section{CI/CD (suggestion)}
-Pipeline GitHub Actions / GitLab CI : build backend, run tests, build frontend, publish images, déployer.
-
-% Chapitre Tests et Qualité
-\chapter{Tests, Validation et Qualité}
-\section{Tests Backend}
-\begin{itemize}
-  \item Tests unitaires JUnit (ex : \texttt{AiServerApplicationTests.java})
-  \item Tests d'intégration pour contrôleurs et répositories
-  \item Mock des services externes (Gemini API, TTS)
+% Tests et qualité
+\chapter{Validation, Tests et Qualité}
+\section{Stratégie de test}
+\begin{itemize}[leftmargin=*,nosep]
+  \item Tests unitaires JUnit côté backend ; tests d'intégration pour contrôleurs.
+  \item Tests unitaires (Jest) et \emph{end-to-end} (Cypress) côté frontend.
+  \item Tests de charge basiques pour valider la latence \ac{WS}/REST.
 \end{itemize}
 
-\section{Tests Frontend}
-\begin{itemize}
-  \item Tests unitaires (Jest + React Testing Library)
-  \item Tests end-to-end (Cypress) pour scénarios critiques (login, envoi message, playback TTS)
+\section{Couverture et indicateurs}
+Indiquer la couverture, la qualité du code (linters, conventions), et les principaux correctifs issus des tests.
+
+% Sécurité
+\chapter{Sécurité et Conformité}
+\begin{itemize}[leftmargin=*,nosep]
+  \item Gestion des secrets par variables d'environnement ; ne pas committer de clés.
+  \item JWT avec expiration ; rafraîchissement éventuel ; habilitations par rôle.
+  \item Durcissement des en-têtes HTTP ; CORS ; validation stricte des entrées.
+  \item Journalisation des accès sensibles et supervision.
 \end{itemize}
 
-\section{Analyse de qualité}
-\begin{itemize}
-  \item Linters (ESLint) et formatters (Prettier) pour le frontend
-  \item Static analysis (SpotBugs / PMD) pour Java
-\end{itemize}
+% Résultats
+\chapter{Résultats, Limites et Perspectives}
+Présenter des scénarios aboutis (conversations, TTS) et des métriques observées. Discuter des limites (latence IA, qualité TTS, robustesse import PDF) et des pistes d'amélioration (scalabilité, monitoring, nouvelle UI, modèles IA spécialisés, Kubernetes, CDN, etc.).
 
-% Chapitre Résultats et démonstration
-\chapter{Résultats et démonstrations}
-Présenter exemples d'exécutions, logs et métriques.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.8\textwidth]{ui_chat.png}
-  \caption{Capture d'écran: Interface Chat}
-  \label{fig:ui_chat}
-\end{figure}
-
-\subsection{Scénarios testés}
-\begin{itemize}
-  \item Authentification et création d'utilisateur
-  \item Conversation basique avec l'IA
-  \item TTS de messages (génération audio)
-  \item Extraction de texte depuis un PDF
-\end{itemize}
-
-% Chapitre Sécurité et confidentialité
-\chapter{Sécurité et Confidentialité}
-\begin{itemize}
-  \item Gestion des tokens JWT et durées d'expiration
-  \item Stockage des secrets (ne pas committer \texttt{application.yml} contenant secrets)
-  \item Consentement et anonymisation des messages (si données utilisateurs sensibles)
-  \item Recommandation : utilisation d'un vault (HashiCorp Vault/Azure Key Vault)
-\end{itemize}
-
-% Chapitre Travaux futurs
-\chapter{Perspectives et améliorations}
-\begin{itemize}
-  \item Améliorer la scalabilité (Kubernetes)
-  \item Ajouter monitoring (Prometheus + Grafana)
-  \item Tester robustesse (fuzzing, tests de charge)
-  \item Mode conversation multi-utilisateurs / context windows plus longues
-\end{itemize}
-
-% Références / Bibliographie
+% Références
 \clearpage
 \chapter*{Références}
 \addcontentsline{toc}{chapter}{Références}
@@ -332,24 +321,25 @@ Présenter exemples d'exécutions, logs et métriques.
 % Annexes
 \appendix
 \chapter{Annexes}
-\section{Fichiers de configuration importants}
+\section{Catalogue des endpoints (exemple)}
+\begin{longtable}{p{5cm} p{8.5cm}}
+	oprule
+	extbf{Endpoint} & \textbf{Description}\\\midrule\endhead
+POST /api/auth/login & Authentification, obtention du JWT.\\
+POST /api/users & Création d'utilisateur.\\
+POST /api/gemini/ask & Envoi d'un message au service IA.\\
+POST /api/pdf/upload & Envoi d'un PDF, extraction texte.\\
+\bottomrule
+\end{longtable}
+
+\section{Synthèse des principaux fichiers}
 \begin{itemize}
-  \item \texttt{application.yml} (expliquer les clés)
-  \item \texttt{docker-compose.yml} (extrait)
+  \item Backend : \texttt{src/main/java/com/bagga/aiserver/...}
+  \item Frontend : \texttt{src/pages}, \texttt{src/components}, \texttt{src/contexts}, \texttt{src/services}
 \end{itemize}
 
-\section{Liste des fichiers clés du projet}
-\begin{itemize}
-  \item Backend : \texttt{src/main/java/...} (lister les packages et classes importantes)
-  \item Frontend : \texttt{src/components}, \texttt{src/pages}, \texttt{src/services}
-\end{itemize}
-
-\section{Instructions rapides pour reproduire}
-\begin{enumerate}
-  \item Cloner le dépôt.
-  \item Backend : \texttt{cd backend/ai-server && ./mvnw clean package}
-  \item Frontend : \texttt{cd frontend/ask-ai-web-app && npm install && npm run build}
-  \item \texttt{docker-compose up --build}
-\end{enumerate}
+\section{Captures d'écran (à insérer)}
+Remplacer les maquettes TikZ par les captures réelles : \texttt{images/ui-login.png}, \texttt{images/ui-chat.png}, etc.
 
 \end{document}
+\end{itemize}

@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+\draw[fill=gray!5] (0,0) rectangle (10,5.5);
+\draw (0.3,4.9) rectangle (9.7,5.3) node[pos=.5]{Header Chat};
+\draw (0.3,0.7) rectangle (9.7,4.7);
+\node at (5,2.7) {Zone de messages};
+\draw (0.3,0.2) rectangle (8.1,0.6) node[pos=.5]{Saisie};
+\draw (8.3,0.2) rectangle (9.7,0.6) node[pos=.5]{Envoyer};
+\node at (5,-0.4) {Remplacer par capture réelle};
+\end{tikzpicture}

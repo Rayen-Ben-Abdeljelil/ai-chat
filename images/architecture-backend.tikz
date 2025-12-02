@@ -1,0 +1,15 @@
+\begin{tikzpicture}[font=\small, node distance=8mm]
+\tikzstyle{box}=[draw, rounded corners, fill=orange!10, minimum width=30mm, minimum height=8mm]
+\node[box] (controllers) {Controllers (REST)};
+\node[box, below=of controllers] (services) {Services (Business)};
+\node[box, below=of services] (repos) {Repositories (JPA)};
+\node[box, below=of repos] (entities) {Entities (Domain)};
+\node[box, right=22mm of services] (security) {Security (JWT)};
+\node[box, right=22mm of repos] (redis) {Redis Cache};
+\draw[-stealth] (controllers) -- (services);
+\draw[-stealth] (services) -- (repos);
+\draw[-stealth] (repos) -- (entities);
+\draw[-stealth] (services) -- (security);
+\draw[-stealth] (services) -- (redis);
+\node[below=8mm of entities] {Remplacer par l'architecture backend détaillée};
+\end{tikzpicture}

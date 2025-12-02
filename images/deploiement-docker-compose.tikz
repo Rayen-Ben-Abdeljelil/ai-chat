@@ -1,0 +1,9 @@
+\begin{tikzpicture}[font=\small, node distance=10mm]
+\tikzstyle{ctr}=[draw, rounded corners, fill=purple!10, minimum width=40mm, minimum height=10mm]
+\node[ctr] (backend) {Container: ai-server};
+\node[ctr, below=of backend] (redis) {Container: redis};
+\node[ctr, below=of redis] (mary) {Process: marytts-server (host)};
+\draw[-stealth] (backend) -- node[right]{Cache} (redis);
+\draw[-stealth] (backend) -- node[right]{HTTP} (mary);
+\node[below=8mm of mary] {Remplacer par le diagramme de déploiement détaillé};
+\end{tikzpicture}
