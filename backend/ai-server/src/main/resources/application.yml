@@ -1,0 +1,22 @@
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: ask-ai-app
+      username: bagga
+      password: bagga
+      authentication-database: admin
+
+    redis:
+      host: localhost
+      port: 6379
+
+  ai:
+    openai:
+      chat:
+        base-url: https://generativelanguage.googleapis.com
+        completions-path: /v1beta/openai/chat/completions
+        options:
+          model: gemini-2.0-flash
+      api-key: "AIzaSyCWQ1OVczv2tsg01I044AvFltHIZiDmdds"
