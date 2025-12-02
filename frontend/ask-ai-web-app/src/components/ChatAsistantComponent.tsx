@@ -280,45 +280,51 @@ function ChatAssistantComponent() {
   }, [currentUser?.token]);
 
   return (
-    <div className="flex flex-col flex-1 h-screen bg-gray-800 relative">
+    <div className="flex flex-col flex-1 h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative">
       {isDrawerOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black bg-opacity-60 z-40 lg:hidden backdrop-blur-sm"
           onClick={toggleDrawer}
         />
       )}
 
       <div
-        className={`fixed left-0 top-0 h-full w-80 bg-gray-900 transform transition-transform duration-300 ease-in-out z-50 lg:hidden flex flex-col ${
+        className={`fixed left-0 top-0 h-full w-80 bg-gradient-to-b from-slate-900 to-slate-950 transform transition-all duration-300 ease-out z-50 lg:hidden flex flex-col shadow-2xl border-r border-slate-700/50 ${
           isDrawerOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between p-4 border-b border-gray-700 flex-shrink-0">
-          <h2 className="text-lg font-semibold text-white">Avatar Assistant</h2>
+        <div className="flex items-center justify-between p-4 border-b border-slate-700/30 flex-shrink-0 bg-gradient-to-r from-blue-600 to-cyan-600">
+          <h2 className="text-lg font-bold text-white flex items-center gap-2">
+            <span className="w-2 h-2 bg-cyan-300 rounded-full animate-pulse"></span>
+            Avatar Assistant
+          </h2>
           <button
             onClick={toggleDrawer}
-            className="text-gray-400 hover:text-white p-1"
+            className="text-white hover:text-cyan-300 p-1 transition-colors hover:bg-white/10 rounded-lg"
           >
             <FiX size={24} />
           </button>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4">
-          <div className="w-full bg-gray-800 rounded-lg p-6 text-center">
-            <Lottie
-              lottieRef={lottieRef}
-              animationData={talkingAvatar}
-              loop={true}
-              autoplay={isTalking}
-              style={{ width: "100%", height: "100%" }}
-            />
+          <div className="w-full bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 text-center border border-slate-700/50 shadow-lg">
+            <div className="mb-4 rounded-xl overflow-hidden bg-slate-950 p-4">
+              <Lottie
+                lottieRef={lottieRef}
+                animationData={talkingAvatar}
+                loop={true}
+                autoplay={isTalking}
+                style={{ width: "100%", height: "100%" }}
+              />
+            </div>
             {spokenText && (
-              <p className="mb-6 text-gray-300 italic select-text">
-                {spokenText.spokenText}
+              <p className="mb-6 text-cyan-300 italic select-text text-sm font-medium">
+                "{spokenText.spokenText}"
               </p>
             )}
-            <label className="block mb-2 text-sm font-medium text-gray-300">
-              Speed: {speed.toFixed(1)}x
+            <label className="block mb-4 text-sm font-semibold text-gray-300">
+              Voice Speed:{" "}
+              <span className="text-cyan-400">{speed.toFixed(1)}x</span>
               <input
                 type="range"
                 min="0.5"
@@ -326,39 +332,49 @@ function ChatAssistantComponent() {
                 step="0.1"
                 value={speed}
                 onChange={(e) => setSpeed(parseFloat(e.target.value))}
-                className="w-full mt-1"
+                className="w-full mt-2 accent-cyan-500"
               />
             </label>
-            <p className="text-white font-medium">Avatar Assistant</p>
-            <p className="text-gray-400 text-sm mt-1">Ready to help you</p>
+            <div className="mb-4 space-y-1">
+              <p className="text-white font-bold text-lg">Assistant IA</p>
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <p className="text-gray-400 text-sm">Online & Ready</p>
+              </div>
+            </div>
 
-            <div className="mt-6 space-y-4 text-left">
-              <div className="bg-gray-700 p-3 rounded">
-                <h4 className="text-white font-medium mb-2">Recent Activity</h4>
-                <p className="text-gray-300 text-sm">
+            <div className="mt-6 space-y-3 text-left">
+              <div className="bg-gradient-to-r from-blue-600/20 to-cyan-600/20 p-3 rounded-lg border border-cyan-500/30 hover:border-cyan-400/60 transition-all">
+                <h4 className="text-cyan-300 font-semibold mb-1">
+                  📊 Recent Activity
+                </h4>
+                <p className="text-gray-300 text-xs">
                   Last conversation: 2 hours ago
                 </p>
               </div>
-              <div className="bg-gray-700 p-3 rounded">
-                <h4 className="text-white font-medium mb-2">Settings</h4>
-                <p className="text-gray-300 text-sm">
-                  Voice enabled, Speed: {speed}x
+              <div className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 p-3 rounded-lg border border-purple-500/30 hover:border-purple-400/60 transition-all">
+                <h4 className="text-purple-300 font-semibold mb-1">
+                  ⚙️ Settings
+                </h4>
+                <p className="text-gray-300 text-xs">
+                  Voice: ON | Speed: {speed}x
                 </p>
               </div>
-              <div className="bg-gray-700 p-3 rounded">
-                <h4 className="text-white font-medium mb-2">Tips</h4>
-                <p className="text-gray-300 text-sm">
-                  Try asking me about any topic or upload a PDF file for
-                  analysis.
+              <div className="bg-gradient-to-r from-yellow-600/20 to-orange-600/20 p-3 rounded-lg border border-yellow-500/30 hover:border-yellow-400/60 transition-all">
+                <h4 className="text-yellow-300 font-semibold mb-1">💡 Tips</h4>
+                <p className="text-gray-300 text-xs">
+                  Ask me anything or upload a PDF for analysis!
                 </p>
               </div>
-              <div className="bg-gray-700 p-3 rounded">
-                <h4 className="text-white font-medium mb-2">Features</h4>
+              <div className="bg-gradient-to-r from-green-600/20 to-emerald-600/20 p-3 rounded-lg border border-green-500/30 hover:border-green-400/60 transition-all">
+                <h4 className="text-green-300 font-semibold mb-1">
+                  ✨ Features
+                </h4>
                 <ul className="text-gray-300 text-xs space-y-1">
-                  <li>• Voice synthesis with speed control</li>
-                  <li>• PDF file upload and analysis</li>
-                  <li>• Real-time conversation</li>
-                  <li>• Animated avatar responses</li>
+                  <li>🔊 Voice synthesis + speed control</li>
+                  <li>📄 PDF analysis</li>
+                  <li>💬 Real-time chat</li>
+                  <li>🎭 Animated responses</li>
                 </ul>
               </div>
             </div>
@@ -366,10 +382,10 @@ function ChatAssistantComponent() {
         </div>
       </div>
 
-      <div className="flex flex-row px-4 py-4 items-center justify-between w-full bg-gradient-to-r from-gray-800 to-blue-800 shadow-lg">
+      <div className="flex flex-row px-4 py-4 items-center justify-between w-full bg-gradient-to-r from-slate-900 via-blue-900/30 to-slate-900 shadow-xl border-b border-slate-700/30 backdrop-blur-sm">
         <button
           onClick={toggleDrawer}
-          className="w-6 h-6 text-white lg:hidden hover:text-gray-300 transition-colors"
+          className="w-6 h-6 text-white lg:hidden hover:text-cyan-300 transition-all hover:scale-110 p-1 rounded-lg hover:bg-white/10"
           aria-label="Open menu"
         >
           <svg
@@ -386,35 +402,44 @@ function ChatAssistantComponent() {
             />
           </svg>
         </button>
-        <h1 className="text-xl md:text-2xl font-bold text-white text-center flex-1 lg:flex-none">
-          Welcome to Chat Assistant
-        </h1>
+        <div className="text-center flex-1 lg:flex-none">
+          <h1 className="text-xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+            Chat Assistant IA
+          </h1>
+          <p className="text-xs md:text-sm text-gray-400 mt-0.5">
+            Powered by advanced AI
+          </p>
+        </div>
         <div className="w-6 lg:hidden"></div>
       </div>
 
       <div className="flex flex-row flex-1 overflow-hidden">
-        <div className="hidden lg:flex lg:flex-col lg:w-1/4 xl:w-1/5 bg-gray-900 border-r border-gray-700 overflow-y-auto">
-          <div className="p-4 border-b border-gray-700">
-            <h2 className="text-lg font-semibold text-white mb-4">
+        <div className="hidden lg:flex lg:flex-col lg:w-1/4 xl:w-1/5 bg-gradient-to-b from-slate-900 to-slate-950 border-r border-slate-700/30 overflow-y-auto">
+          <div className="p-4 border-b border-slate-700/30 bg-gradient-to-r from-blue-600 to-cyan-600 sticky top-0 z-10">
+            <h2 className="text-lg font-bold text-white flex items-center gap-2">
+              <span className="w-2 h-2 bg-cyan-300 rounded-full animate-pulse"></span>
               Avatar Assistant
             </h2>
           </div>
           <div className="p-4">
-            <div className="w-full bg-gray-800 rounded-lg p-6 text-center">
-              <Lottie
-                lottieRef={lottieRef}
-                animationData={talkingAvatar}
-                loop={true}
-                autoplay={isTalking}
-                style={{ width: "100%", height: "100%" }}
-              />
+            <div className="w-full bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 text-center border border-slate-700/50 shadow-lg">
+              <div className="mb-4 rounded-xl overflow-hidden bg-slate-950 p-4">
+                <Lottie
+                  lottieRef={lottieRef}
+                  animationData={talkingAvatar}
+                  loop={true}
+                  autoplay={isTalking}
+                  style={{ width: "100%", height: "100%" }}
+                />
+              </div>
               {spokenText && (
-                <p className="mb-6 text-gray-300 italic select-text">
-                  {spokenText.spokenText}
+                <p className="mb-6 text-cyan-300 italic select-text text-sm font-medium">
+                  "{spokenText.spokenText}"
                 </p>
               )}
-              <label className="block mb-2 text-sm font-medium text-gray-300">
-                Speed: {speed.toFixed(1)}x
+              <label className="block mb-4 text-sm font-semibold text-gray-300">
+                Voice Speed:{" "}
+                <span className="text-cyan-400">{speed.toFixed(1)}x</span>
                 <input
                   type="range"
                   min="0.5"
@@ -422,22 +447,27 @@ function ChatAssistantComponent() {
                   step="0.1"
                   value={speed}
                   onChange={(e) => setSpeed(parseFloat(e.target.value))}
-                  className="w-full mt-1"
+                  className="w-full mt-2 accent-cyan-500"
                 />
               </label>
-              <p className="text-white font-medium">Avatar Assistant</p>
-              <p className="text-gray-400 text-sm mt-1">Ready to help you</p>
+              <div className="space-y-1">
+                <p className="text-white font-bold">Assistant IA</p>
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <p className="text-gray-400 text-xs">Online</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col flex-1 overflow-y-auto bg-gradient-to-br from-gray-900 via-blue-900 to-gray-800 p-4">
+        <div className="flex flex-col flex-1 overflow-y-auto bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 p-4 space-y-3">
           {conversationMessages.length === 0 ? (
             <div className="flex justify-center items-center h-full">
               <div className="text-center max-w-md">
-                <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-cyan-600/20">
                   <svg
-                    className="w-8 h-8 text-white"
+                    className="w-10 h-10 text-white"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -450,63 +480,77 @@ function ChatAssistantComponent() {
                     ></path>
                   </svg>
                 </div>
-                <h2 className="text-xl md:text-2xl font-bold text-white mb-2">
+                <h2 className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-2">
                   Start a conversation
                 </h2>
-                <p className="text-gray-300 text-sm md:text-base">
+                <p className="text-gray-400 text-base">
                   Type your message below to begin chatting with your AI
                   assistant
                 </p>
               </div>
             </div>
           ) : (
-            <div className="flex flex-col space-y-2 overflow-y-auto">
-              {conversationMessages.map((msg) => {
-                const isCurrentUser = msg.senderId === currentUser?.id;
-                return (
+            conversationMessages.map((msg) => {
+              const isCurrentUser = msg.senderId === currentUser?.id;
+              return (
+                <div
+                  key={msg.id}
+                  className={`flex ${
+                    isCurrentUser ? "justify-end" : "justify-start"
+                  } animate-fadeIn`}
+                >
                   <div
-                    key={msg.id}
-                    className={`flex ${
-                      isCurrentUser ? "justify-end" : "justify-start"
+                    className={`max-w-xs md:max-w-sm p-4 rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl ${
+                      isCurrentUser
+                        ? "bg-gradient-to-br from-blue-600 to-cyan-600 text-white rounded-br-none border border-cyan-400/30"
+                        : "bg-gradient-to-br from-slate-700 to-slate-800 text-gray-100 rounded-bl-none border border-slate-600/50"
                     }`}
                   >
-                    <div
-                      className={`max-w-xs md:max-w-sm p-3 rounded-lg ${
-                        isCurrentUser
-                          ? "bg-blue-600 text-white rounded-br-none"
-                          : "bg-gray-700 text-white rounded-bl-none"
+                    <p className="text-sm leading-relaxed">{msg.content}</p>
+                    <p
+                      className={`text-xs mt-2 font-medium ${
+                        isCurrentUser ? "text-blue-100" : "text-gray-400"
                       }`}
                     >
-                      <p className="text-sm">{msg.content}</p>
-                      <p className="text-xs mt-1 text-gray-300 text-right">
-                        {new Date(msg.timestamp).toLocaleTimeString()}
-                      </p>
-                    </div>
+                      {new Date(msg.timestamp).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              );
+            })
           )}
         </div>
       </div>
 
       {selectedFile && (
-        <div className="text-sm text-yellow-300 mt-2">
-          Attached file: {selectedFile.name}
+        <div className="text-xs text-cyan-300 mt-2 px-4 py-2 bg-cyan-600/10 rounded-lg border border-cyan-500/30 flex items-center justify-between">
+          <span>
+            📎 Attached:{" "}
+            <span className="font-semibold">{selectedFile.name}</span>
+          </span>
+          <button
+            onClick={() => setSelectedFile(null)}
+            className="text-cyan-400 hover:text-cyan-200 transition-colors"
+          >
+            <FiX size={16} />
+          </button>
         </div>
       )}
 
-      <div className="bg-gradient-to-r from-gray-800 via-blue-800 to-gray-800 p-3 md:p-4 border-t border-gray-700">
+      <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 p-3 md:p-4 border-t border-slate-700/50 shadow-2xl">
         <div className="max-w-4xl mx-auto">
-          <div className="relative flex items-end">
-            <div className="absolute left-3 bottom-3 flex gap-1 md:gap-2 text-gray-400 z-10">
+          <div className="relative flex items-end gap-3">
+            <div className="flex gap-2 text-gray-400 z-10">
               <button
-                className="hover:text-white p-1 transition-colors"
+                className="hover:text-cyan-300 p-2 transition-all hover:bg-slate-700 rounded-lg hover:scale-110 duration-200"
                 title="Attach File"
                 aria-label="Attach file"
                 onClick={() => document.getElementById("fileInput")?.click()}
               >
-                <FiPaperclip size={16} className="md:w-[18px] md:h-[18px]" />
+                <FiPaperclip size={18} />
               </button>
               <input
                 type="file"
@@ -523,17 +567,16 @@ function ChatAssistantComponent() {
                 }}
               />
 
-              {/* Mic button — uses browser SpeechRecognition (Option A) */}
               <button
                 onClick={startListening}
-                className="hover:text-white p-1 transition-colors flex items-center justify-center"
+                className="hover:text-cyan-300 p-2 transition-all hover:bg-slate-700 rounded-lg hover:scale-110 duration-200 flex items-center justify-center"
                 title="Voice Message"
                 aria-label="Voice message"
               >
                 <FiMic
-                  size={16}
-                  className={`md:w-[18px] md:h-[18px] ${
-                    isListening ? "text-red-400 animate-pulse" : ""
+                  size={18}
+                  className={`transition-all ${
+                    isListening ? "text-red-400 animate-pulse scale-110" : ""
                   }`}
                 />
               </button>
@@ -542,8 +585,8 @@ function ChatAssistantComponent() {
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="w-full p-3 pl-16 md:pl-20 pr-12 md:pr-14 border border-gray-600 rounded-2xl bg-gray-700 text-white placeholder-gray-400 resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all min-h-[44px] max-h-32 text-sm md:text-base"
-              placeholder="Type your message here..."
+              className="w-full p-3 border border-slate-600 rounded-xl bg-slate-700/50 backdrop-blur-sm text-white placeholder-gray-500 resize-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all min-h-[44px] max-h-32 text-sm md:text-base hover:border-slate-500 shadow-inner"
+              placeholder="Type your message here... or use voice 🎤"
               rows={1}
             />
 
@@ -551,23 +594,24 @@ function ChatAssistantComponent() {
               type="button"
               onClick={handleSendMessage}
               disabled={!message.trim()}
-              className="absolute right-2 bottom-2 text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 transition-all duration-200 transform hover:scale-105 disabled:hover:scale-100"
+              className="bg-gradient-to-br from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 disabled:from-gray-600 disabled:to-gray-600 disabled:cursor-not-allowed text-white font-semibold rounded-xl p-2 md:p-3 transition-all duration-200 transform hover:scale-110 disabled:hover:scale-100 shadow-lg hover:shadow-xl hover:shadow-cyan-600/30 disabled:shadow-none"
               aria-label="Send message"
             >
-              <FiSend size={14} className="md:w-4 md:h-4" />
+              <FiSend size={18} />
               <span className="sr-only">Send message</span>
             </button>
           </div>
 
-          <div className="flex justify-between items-center mt-2 text-xs text-gray-400">
+          <div className="flex justify-between items-center mt-2 text-xs text-gray-500 px-2">
             <span className="hidden sm:inline">
-              Press Enter to send, Shift+Enter for new line
+              <span className="text-cyan-400">Enter</span> to send •{" "}
+              <span className="text-cyan-400">Shift+Enter</span> for new line
             </span>
-            <span className="sm:hidden">Enter to send</span>
+            <span className="sm:hidden text-cyan-400">Enter to send</span>
             <span
-              className={`${message.length > 500 ? "text-yellow-400" : ""} ${
-                message.length > 800 ? "text-red-400" : ""
-              }`}
+              className={`font-semibold transition-colors ${
+                message.length > 500 ? "text-yellow-400" : ""
+              } ${message.length > 800 ? "text-red-400" : "text-gray-400"}`}
             >
               {message.length}/1000
             </span>
